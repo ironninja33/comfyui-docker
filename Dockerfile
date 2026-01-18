@@ -1,4 +1,4 @@
-FROM runpod/comfyui:latest
+FROM runpod/comfyui-5090:latest
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
