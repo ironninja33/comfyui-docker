@@ -1,0 +1,3 @@
+docker build -t cornbox/comfyui:latest .
+docker run --rm --gpus all -p 8188:8188 -p 7888:7888 cornbox/comfyui:latest
+docker exec -it <name> bash

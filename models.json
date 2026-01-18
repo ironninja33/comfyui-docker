@@ -1,0 +1,202 @@
+{
+  "models": [
+    {
+      "name": "T5 encoder",
+      "type": "cornbox",
+      "base": "FLUX.1",
+      "save_path": "clip",
+      "description": "T5 encoder.",
+      "reference": "https://huggingface.co/silveroxides/",
+      "filename": "flan-t5-xxl-fp16.safetensors",
+      "url": "https://huggingface.co/silveroxides/flan-t5-xxl-encoder-only/resolve/main/flan-t5-xxl-fp16.safetensors",
+      "size": "9.79GB"
+    },
+    {
+      "name": "Chroma VAE",
+      "type": "cornbox",
+      "base": "FLUX.1",
+      "save_path": "vae",
+      "description": "VAE",
+      "reference": "https://huggingface.co/lodestones/Chroma",
+      "filename": "ae.safetensors",
+      "url": "https://huggingface.co/lodestones/Chroma/resolve/main/ae.safetensors",
+      "size": "335MB"
+    },
+    {
+      "name": "4x Upscale",
+      "type": "cornbox",
+      "base": "FLUX.1",
+      "save_path": "upscale_models",
+      "description": "4x Upscaler",
+      "reference": "https://huggingface.co/Phips/4xNomosWebPhoto_RealPLKSR",
+      "filename": "4xNomosWebPhoto_RealPLKSR.safetensors",
+      "url": "https://huggingface.co/Phips/4xNomosWebPhoto_RealPLKSR/resolve/main/4xNomosWebPhoto_RealPLKSR.safetensors",
+      "size": "29.6MB"
+    },
+    {
+      "name": "Skin Diff Detailer",
+      "type": "cornbox",
+      "base": "FLUX.1",
+      "save_path": "upscale_models",
+      "description": "4x Upscaler",
+      "reference": "https://huggingface.co/uwg/upscaler",
+      "filename": "1x-ITF-SkinDiffDetail-Lite-v1.pth",
+      "url": "https://huggingface.co/uwg/upscaler/resolve/main/ESRGAN/1x-ITF-SkinDiffDetail-Lite-v1.pth",
+      "size": "20.1MB"
+    },
+    {
+      "name": "Chroma Finetune v8.1-15",
+      "type": "cornbox",
+      "base": "FLUX.1",
+      "save_path": "diffusion_models",
+      "description": "Chroma Finetune v8.1-15",
+      "reference": "https://huggingface.co/cornbox",
+      "filename": "finetune_v8_1-15.safetensors",
+      "url": "https://huggingface.co/cornbox/chroma-finetune/resolve/main/finetune_v8_1-15.safetensors",
+      "size": "17.8GB"
+    },
+    {
+      "name": "Chroma Finetune v8.1-12",
+      "type": "cornbox",
+      "base": "FLUX.1",
+      "save_path": "diffusion_models",
+      "description": "Chroma Finetune v8.1-12",
+      "reference": "https://huggingface.co/cornbox",
+      "filename": "finetune_v8_1-12.safetensors",
+      "url": "https://huggingface.co/cornbox/chroma-finetune/resolve/main/finetune_v8_1-12.safetensors",
+      "size": "17.8GB"
+    },
+    {
+      "name": "Chroma Lora - VR",
+      "type": "cornbox",
+      "base": "FLUX.1",
+      "save_path": "loras",
+      "description": "Chroma Lora",
+      "reference": "https://huggingface.co/cornbox",
+      "filename": "v81_vr.safetensors",
+      "url": "https://huggingface.co/cornbox/chroma-loras/resolve/main/v81_vr.safetensors",
+      "size": "503.0MB"
+    },
+    {
+      "name": "Chroma Lora - SJ",
+      "type": "cornbox",
+      "base": "FLUX.1",
+      "save_path": "loras",
+      "description": "Chroma Lora",
+      "reference": "https://huggingface.co/cornbox",
+      "filename": "v81_sj.safetensors",
+      "url": "https://huggingface.co/cornbox/chroma-loras/resolve/main/v81_sj.safetensors",
+      "size": "503.0MB"
+    },
+    {
+      "name": "Chroma Lora - SB",
+      "type": "cornbox",
+      "base": "FLUX.1",
+      "save_path": "loras",
+      "description": "Chroma Lora",
+      "reference": "https://huggingface.co/cornbox",
+      "filename": "v81_sb.safetensors",
+      "url": "https://huggingface.co/cornbox/chroma-loras/resolve/main/v81_sb.safetensors",
+      "size": "503.0MB"
+    },
+    {
+      "name": "Chroma Lora - PA",
+      "type": "cornbox",
+      "base": "FLUX.1",
+      "save_path": "loras",
+      "description": "Chroma Lora",
+      "reference": "https://huggingface.co/cornbox",
+      "filename": "v81_pa.safetensors",
+      "url": "https://huggingface.co/cornbox/chroma-loras/resolve/main/v81_pa.safetensors",
+      "size": "503.0MB"
+    },
+    {
+      "name": "Chroma Lora - TC",
+      "type": "cornbox",
+      "base": "FLUX.1",
+      "save_path": "loras",
+      "description": "Chroma Lora",
+      "reference": "https://huggingface.co/cornbox",
+      "filename": "v7_tc.safetensors",
+      "url": "https://huggingface.co/cornbox/chroma-loras/resolve/main/v7_tc.safetensors",
+      "size": "503.0MB"
+    },
+    {
+      "name": "Chroma Lora - AR",
+      "type": "cornbox",
+      "base": "FLUX.1",
+      "save_path": "loras",
+      "description": "Chroma Lora",
+      "reference": "https://huggingface.co/cornbox",
+      "filename": "v7_ar.safetensors",
+      "url": "https://huggingface.co/cornbox/chroma-loras/resolve/main/v7_ar.safetensors",
+      "size": "503.0MB"
+    },
+    {
+      "name": "Chroma Lora - CH",
+      "type": "cornbox",
+      "base": "FLUX.1",
+      "save_path": "loras",
+      "description": "Chroma Lora",
+      "reference": "https://huggingface.co/cornbox",
+      "filename": "v6_ch.safetensors",
+      "url": "https://huggingface.co/cornbox/chroma-loras/resolve/main/v6_ch.safetensors",
+      "size": "503.0MB"
+    },
+    {
+      "name": "Chroma Lora - AS",
+      "type": "cornbox",
+      "base": "FLUX.1",
+      "save_path": "loras",
+      "description": "Chroma Lora",
+      "reference": "https://huggingface.co/cornbox",
+      "filename": "v6_as.safetensors",
+      "url": "https://huggingface.co/cornbox/chroma-loras/resolve/main/v6_as.safetensors",
+      "size": "503.0MB"
+    },
+    {
+      "name": "Chroma Lora - SH",
+      "type": "cornbox",
+      "base": "FLUX.1",
+      "save_path": "loras",
+      "description": "Chroma Lora",
+      "reference": "https://huggingface.co/cornbox",
+      "filename": "chroma_sh.safetensors",
+      "url": "https://huggingface.co/cornbox/chroma-loras/resolve/main/chroma_sh.safetensors",
+      "size": "503.0MB"
+    },
+    {
+      "name": "Chroma Lora - MTS",
+      "type": "cornbox",
+      "base": "FLUX.1",
+      "save_path": "loras",
+      "description": "Chroma Lora",
+      "reference": "https://huggingface.co/cornbox",
+      "filename": "chroma_mts.safetensors",
+      "url": "https://huggingface.co/cornbox/chroma-loras/resolve/main/chroma_mts.safetensors",
+      "size": "503.0MB"
+    },
+    {
+      "name": "Chroma Lora - GS",
+      "type": "cornbox",
+      "base": "FLUX.1",
+      "save_path": "loras",
+      "description": "Chroma Lora",
+      "reference": "https://huggingface.co/cornbox",
+      "filename": "chroma_gs.safetensors",
+      "url": "https://huggingface.co/cornbox/chroma-loras/resolve/main/chroma_gs.safetensors",
+      "size": "503.0MB"
+    },
+    {
+      "name": "Chroma Lora - EC",
+      "type": "cornbox",
+      "base": "FLUX.1",
+      "save_path": "loras",
+      "description": "Chroma Lora",
+      "reference": "https://huggingface.co/cornbox",
+      "filename": "chroma_ec.safetensors",
+      "url": "https://huggingface.co/cornbox/chroma-loras/resolve/main/chroma_ec.safetensors",
+      "size": "503.0MB"
+    }
+]
+}
