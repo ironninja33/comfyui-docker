@@ -1,4 +1,4 @@
-FROM runpod/comfyui-5090:latest
+FROM runpod/comfyui:latest
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
@@ -21,7 +21,7 @@ RUN ldconfig
 # 8188: ComfyUI
 # 7888: Infinite Image Browsing
 # 8080: FileBrowser
-EXPOSE 8188 7888 8080
+EXPOSE 8188 7888 8080 8888
 
 # Setup startup script
 COPY config.ini /config.ini

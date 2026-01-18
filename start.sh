@@ -181,7 +181,7 @@ if [ ! -d "$COMFYUI_DIR" ]; then
 fi
 
 # Setup ComfyUI Manager config
-if [ -f "/config.ini" ]; then
+if [ -f "/config.ini" ] && [ ! -f "$COMFYUI_DIR/user/__manager/config.ini" ]; then
     echo "Setting up ComfyUI Manager config..."
     mkdir -p "$COMFYUI_DIR/user/__manager"
     cp /config.ini "$COMFYUI_DIR/user/__manager/config.ini"
@@ -207,12 +207,15 @@ else
 fi
 
 # Ensure base dependencies
-echo "Installing/Updating base dependencies..."
-python -m ensurepip --upgrade
-python -m pip install --upgrade pip setuptools wheel
-python -m pip install -r /workspace/runpod-slim/ComfyUI/requirements.txt
-# Fix missing dependencies for some nodes
-python -m pip install piexif PyWavelets numba
+if [ ! -f "$VENV_DIR/.base_installed" ]; then
+    echo "Installing/Updating base dependencies..."
+    python -m ensurepip --upgrade
+    python -m pip install --upgrade pip setuptools wheel
+    python -m pip install -r /workspace/runpod-slim/ComfyUI/requirements.txt
+    # Fix missing dependencies for some nodes
+    python -m pip install piexif PyWavelets numba
+    touch "$VENV_DIR/.base_installed"
+fi
 
 # Install additional custom nodes
 CUSTOM_NODES=(
@@ -241,37 +244,41 @@ echo "Installing custom node dependencies..."
 cd "$COMFYUI_DIR/custom_nodes"
 for node_dir in */; do
     if [ -d "$node_dir" ]; then
-        echo "Checking dependencies for $node_dir..."
         cd "$COMFYUI_DIR/custom_nodes/$node_dir"
-        
-        # Initialize submodules if present
-        if [ -f ".gitmodules" ]; then
-            echo "Initializing submodules for $node_dir"
-            git submodule update --init --recursive
-        fi
+        if [ ! -f ".install_complete" ]; then
+            echo "Checking dependencies for $node_dir..."
+            
+            # Initialize submodules if present
+            if [ -f ".gitmodules" ]; then
+                echo "Initializing submodules for $node_dir"
+                git submodule update --init --recursive
+            fi
 
-        # Check for requirements.txt
-        if [ -f "requirements.txt" ]; then
-            echo "Installing requirements.txt for $node_dir"
-            python -m pip install --no-cache-dir -r requirements.txt
-        fi
-        
-        # Check for install.py
-        if [ -f "install.py" ]; then
-            echo "Running install.py for $node_dir"
-            python install.py
-        fi
-        
-        # Check for setup.py
-        if [ -f "setup.py" ]; then
-            echo "Running setup.py for $node_dir"
-            python -m pip install --no-cache-dir -e .
+            # Check for requirements.txt
+            if [ -f "requirements.txt" ]; then
+                echo "Installing requirements.txt for $node_dir"
+                python -m pip install --no-cache-dir -r requirements.txt
+            fi
+            
+            # Check for install.py
+            if [ -f "install.py" ]; then
+                echo "Running install.py for $node_dir"
+                python install.py
+            fi
+            
+            # Check for setup.py
+            if [ -f "setup.py" ]; then
+                echo "Running setup.py for $node_dir"
+                python -m pip install --no-cache-dir -e .
+            fi
+            
+            touch ".install_complete"
         fi
     fi
 done
 
 # Patch ComfyUI-Manager model-list.json with custom models
-if [ -d "$COMFYUI_DIR/custom_nodes/ComfyUI-Manager" ] && [ -f "/models.json" ]; then
+if [ -d "$COMFYUI_DIR/custom_nodes/ComfyUI-Manager" ] && [ -f "/models.json" ] && [ ! -f "$COMFYUI_DIR/custom_nodes/ComfyUI-Manager/.patched" ]; then
     echo "Patching ComfyUI-Manager model-list.json..."
     python /json_patch.py --source /models.json --target "$COMFYUI_DIR/custom_nodes/ComfyUI-Manager/model-list.json"
 
@@ -285,6 +292,8 @@ if [ -d "$COMFYUI_DIR/custom_nodes/ComfyUI-Manager" ] && [ -f "/models.json" ]; 
             python /json_patch.py --source /models.json --target "$CACHE_FILE"
         fi
     fi
+    
+    touch "$COMFYUI_DIR/custom_nodes/ComfyUI-Manager/.patched"
 fi
 
 # Start ComfyUI with custom arguments if provided
