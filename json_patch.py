@@ -23,23 +23,11 @@ def patch_json(source_path, target_path):
             if 'models' not in target_data:
                 target_data['models'] = []
             
-            # Create a set of existing filenames to avoid duplicates
-            existing_filenames = {m.get('filename') for m in target_data['models'] if 'filename' in m}
+            # Wholesale prepend source models to target models
+            target_data['models'] = source_data['models'] + target_data['models']
+            count = len(source_data['models'])
             
-            count = 0
-            for model in source_data['models']:
-                filename = model.get('filename')
-                if filename and filename not in existing_filenames:
-                    target_data['models'].append(model)
-                    existing_filenames.add(filename)
-                    count += 1
-                elif not filename:
-                    # If no filename, maybe compare by name?
-                    # For now, just add if no filename (unlikely for models)
-                    target_data['models'].append(model)
-                    count += 1
-            
-            print(f"Added {count} models from {source_path} to {target_path}")
+            print(f"Prepended {count} models from {source_path} to {target_path}")
             
             with open(target_path, 'w') as f:
                 json.dump(target_data, f, indent=4)

@@ -180,6 +180,13 @@ if [ ! -d "$COMFYUI_DIR" ]; then
     git clone https://github.com/comfyanonymous/ComfyUI.git
 fi
 
+# Setup ComfyUI Manager config
+if [ -f "/config.ini" ]; then
+    echo "Setting up ComfyUI Manager config..."
+    mkdir -p "$COMFYUI_DIR/user/__manager"
+    cp /config.ini "$COMFYUI_DIR/user/__manager/config.ini"
+fi
+
 # Install ComfyUI-Manager if not present
 if [ ! -d "$COMFYUI_DIR/custom_nodes/ComfyUI-Manager" ]; then
     echo "Installing ComfyUI-Manager..."

@@ -24,6 +24,7 @@ RUN ldconfig
 EXPOSE 8188 7888 8080
 
 # Setup startup script
+COPY config.ini /config.ini
 COPY models.json /models.json
 COPY json_patch.py /json_patch.py
 COPY set_default_image_browser_path.py /set_default_image_browser_path.py
