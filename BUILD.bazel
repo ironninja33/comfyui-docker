@@ -45,7 +45,6 @@ oci_image(
         ":app_layer",
     ],
     entrypoint = ["/start.sh"],
-    exposed_ports = ["8188", "7888", "8080"],
 )
 
 # Tarball output
