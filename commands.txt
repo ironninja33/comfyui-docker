@@ -1,6 +1,7 @@
 docker build -t ironninja33/comfyui-browser:latest .
 docker run --rm --gpus all -p 8188:8188 -p 7888:7888 ironninja33/comfyui-browser:latest
 docker exec -it <name> bash
+docker push ironninja33/comfyui-browser:latest
 
 docker build -t ironninja33/comfyui-browser:latest-5090 .
 docker run --rm --gpus all -p 8188:8188 -p 7888:7888 ironninja33/comfyui-browser:latest-5090
