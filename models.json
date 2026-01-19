@@ -197,6 +197,17 @@
       "filename": "chroma_ec.safetensors",
       "url": "https://huggingface.co/cornbox/chroma-loras/resolve/main/chroma_ec.safetensors",
       "size": "503.0MB"
+    },
+    {
+      "name": "Chroma Lora - AO",
+      "type": "cornbox",
+      "base": "FLUX.1",
+      "save_path": "loras",
+      "description": "Chroma Lora",
+      "reference": "https://huggingface.co/cornbox",
+      "filename": "v81_ao.safetensors",
+      "url": "https://huggingface.co/cornbox/chroma-loras/resolve/main/v81_ao.safetensors",
+      "size": "503.0MB"
     }
 ]
 }
