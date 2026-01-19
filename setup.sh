@@ -80,6 +80,9 @@ if [ ! -d "$VENV_DIR" ]; then
     source "$VENV_DIR/bin/activate"
     pip install --upgrade pip setuptools wheel
     
+    # Install PyTorch
+    pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu130
+
     # Install base requirements
     if [ -f "$COMFYUI_DIR/requirements.txt" ]; then
         pip install -r "$COMFYUI_DIR/requirements.txt"
