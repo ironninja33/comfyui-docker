@@ -37,20 +37,32 @@ if [ ! -f "./kaniko-executor" ]; then
     mkdir -p temp_kaniko
     tar -xf kaniko.tar -C temp_kaniko
     
+    # Debug: List contents to help diagnose if missing
+    # ls -R temp_kaniko
+
     # Locate the executor binary
-    if [ -f "temp_kaniko/kaniko/executor" ]; then
-        mv temp_kaniko/kaniko/executor ./kaniko-executor
-    elif [ -f "temp_kaniko/executor" ]; then
-        mv temp_kaniko/executor ./kaniko-executor
-    else 
-        # Search for it
-        find temp_kaniko -name executor -type f -exec mv {} ./kaniko-executor \; -quit
+    # It usually resides at /kaniko/executor
+    FOUND_BIN=$(find temp_kaniko -name executor -type f | head -n 1)
+    
+    if [ -n "$FOUND_BIN" ]; then
+        echo "Found Kaniko binary at: $FOUND_BIN"
+        mv "$FOUND_BIN" ./kaniko-executor
+    else
+        echo "Error: Could not find 'executor' binary in extracted image."
+        echo "Contents of temp_kaniko:"
+        ls -R temp_kaniko
+        exit 1
     fi
     
     # Cleanup
     rm regctl kaniko.tar
     rm -rf temp_kaniko
     
+    if [ ! -f "./kaniko-executor" ]; then
+        echo "Error: Failed to move kaniko-executor to current directory."
+        exit 1
+    fi
+
     chmod +x kaniko-executor
     echo "Kaniko setup complete."
 else
