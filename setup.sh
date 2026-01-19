@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Start Timer
+START_TIME=$(date +%s)
+
 # Configuration
 INSTALL_DIR="/workspace"
 COMFYUI_DIR="$INSTALL_DIR/ComfyUI"
@@ -41,28 +44,32 @@ if [ ! -z "$SUDO" ] || [ "$EUID" -eq 0 ]; then
 fi
 
 # 2. Build FFmpeg 7 from source
-if ! command -v ffmpeg &> /dev/null || [[ $(ffmpeg -version | head -n1) != *"version 7"* ]]; then
-    echo -e "${GREEN}[2/8] Checking FFmpeg...${NC}"
-    read -p "FFmpeg 7 not found. Do you want to compile and install FFmpeg 7.0? (This takes a while) [y/N] " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        echo -e "${GREEN}Downloading and compiling FFmpeg 7.0...${NC}"
-        TEMP_DIR=$(mktemp -d)
-        cd "$TEMP_DIR"
-        wget https://ffmpeg.org/releases/ffmpeg-7.0.tar.gz
-        tar xvf ffmpeg-7.0.tar.gz
-        cd ffmpeg-7.0
-        ./configure --prefix=/usr/local --disable-doc --disable-debug --enable-shared
-        make -j$(nproc)
-        $SUDO make install
-        $SUDO ldconfig
-        cd "$INSTALL_DIR"
-        rm -rf "$TEMP_DIR"
-    else
-         echo -e "${YELLOW}Skipping FFmpeg compilation.${NC}"
-    fi
+FFMPEG_DIR="$INSTALL_DIR/ffmpeg"
+export PATH="$FFMPEG_DIR/bin:$PATH"
+export LD_LIBRARY_PATH="$FFMPEG_DIR/lib:$LD_LIBRARY_PATH"
+
+if [ ! -f "$FFMPEG_DIR/bin/ffmpeg" ]; then
+    echo -e "${GREEN}[2/8] Compiling FFmpeg 7.0...${NC}"
+    echo -e "${GREEN}Downloading and compiling FFmpeg 7.0 to $FFMPEG_DIR...${NC}"
+    TEMP_DIR=$(mktemp -d)
+    cd "$TEMP_DIR"
+    wget https://ffmpeg.org/releases/ffmpeg-7.0.tar.gz
+    tar xvf ffmpeg-7.0.tar.gz
+    cd ffmpeg-7.0
+    ./configure --prefix="$FFMPEG_DIR" --disable-doc --disable-debug --enable-shared
+    make -j$(nproc)
+    make install
+    cd "$INSTALL_DIR"
+    rm -rf "$TEMP_DIR"
 else
     echo -e "${GREEN}FFmpeg 7 detected, skipping compilation.${NC}"
+fi
+
+# Add FFmpeg to .bashrc for persistence
+if ! grep -q "$FFMPEG_DIR/bin" ~/.bashrc; then
+    echo "export PATH=\"$FFMPEG_DIR/bin:\$PATH\"" >> ~/.bashrc
+    echo "export LD_LIBRARY_PATH=\"$FFMPEG_DIR/lib:\$LD_LIBRARY_PATH\"" >> ~/.bashrc
+    echo -e "${GREEN}Added FFmpeg to ~/.bashrc for persistence.${NC}"
 fi
 
 # 3. Setup ComfyUI
@@ -81,7 +88,7 @@ if [ ! -d "$VENV_DIR" ]; then
     pip install --upgrade pip setuptools wheel
     
     # Install PyTorch
-    pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu130
+    pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu118
 
     # Install base requirements
     if [ -f "$COMFYUI_DIR/requirements.txt" ]; then
@@ -217,3 +224,8 @@ echo "ComfyUI started. Log: $INSTALL_DIR/comfyui.log"
 echo -e "${GREEN}Setup Complete! Services are running in the background.${NC}"
 echo -e "${GREEN}ComfyUI: http://localhost:8188${NC}"
 echo -e "${GREEN}Image Browser: http://localhost:7888${NC}"
+
+# End Timer
+END_TIME=$(date +%s)
+ELAPSED=$((END_TIME - START_TIME))
+echo -e "${GREEN}Setup took $(($ELAPSED / 60)) minutes and $(($ELAPSED % 60)) seconds.${NC}"

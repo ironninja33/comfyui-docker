@@ -17,6 +17,10 @@ RUN wget https://ffmpeg.org/releases/ffmpeg-7.0.tar.gz \
 # Update shared library cache
 RUN ldconfig
 
+# Ensure FFmpeg is in PATH and libraries are found
+ENV PATH="/usr/local/bin:$PATH"
+ENV LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
+
 # Expose ports
 # 8188: ComfyUI
 # 7888: Infinite Image Browsing

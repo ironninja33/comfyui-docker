@@ -103,6 +103,20 @@ start_image_browser() {
 # ---------------------------------------------------------------------------- #
 
 # Setup environment
+echo "[DEBUG] Checking FFmpeg availability..."
+if ! command -v ffmpeg &> /dev/null; then
+    echo "[DEBUG] FFmpeg not found in PATH. Checking common locations..."
+    if [ -d "/workspace/ffmpeg/bin" ]; then
+        echo "[DEBUG] Found FFmpeg in /workspace/ffmpeg/bin. Adding to PATH."
+        export PATH="/workspace/ffmpeg/bin:$PATH"
+        export LD_LIBRARY_PATH="/workspace/ffmpeg/lib:$LD_LIBRARY_PATH"
+    elif [ -d "/usr/local/bin/ffmpeg" ]; then
+         echo "[DEBUG] Found FFmpeg in /usr/local/bin"
+    fi
+else
+    echo "[DEBUG] FFmpeg found in PATH: $(which ffmpeg)"
+fi
+
 echo "[DEBUG] Setting up SSH..."
 setup_ssh
 echo "[DEBUG] Exporting environment variables..."
