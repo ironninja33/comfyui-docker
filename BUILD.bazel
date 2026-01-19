@@ -1,39 +1,56 @@
 package(default_visibility = ["//visibility:public"])
 
-# Rule to build the Docker image using the existing Dockerfile
+load("@rules_pkg//:pkg.bzl", "pkg_tar")
+load("@rules_oci//oci:defs.bzl", "oci_image", "oci_tarball")
+
+# Flatten FFmpeg binaries
 genrule(
-    name = "comfyui_image",
+    name = "flatten_ffmpeg",
     srcs = [
-        "Dockerfile",
+        "@ffmpeg_static//:ffmpeg_bin",
+        "@ffmpeg_static//:ffprobe_bin",
+    ],
+    outs = ["ffmpeg", "ffprobe"],
+    cmd = "cp $(location @ffmpeg_static//:ffmpeg_bin) $(location ffmpeg) && cp $(location @ffmpeg_static//:ffprobe_bin) $(location ffprobe)",
+)
+
+# Layer for FFmpeg binaries
+pkg_tar(
+    name = "ffmpeg_layer",
+    srcs = [":flatten_ffmpeg"],
+    package_dir = "/usr/local/bin",
+    mode = "0755",
+)
+
+# Layer for Application files
+pkg_tar(
+    name = "app_layer",
+    srcs = [
         "config.ini",
         "models.json",
         "json_patch.py",
         "set_default_image_browser_path.py",
         "start.sh",
     ],
-    outs = ["comfyui_image.tar"],
-    cmd = """
-        mkdir -p build_context
-        cp $(location Dockerfile) build_context/
-        cp $(location config.ini) build_context/
-        cp $(location models.json) build_context/
-        cp $(location json_patch.py) build_context/
-        cp $(location set_default_image_browser_path.py) build_context/
-        cp $(location start.sh) build_context/
-
-        echo "Building Docker image..."
-        docker build -t ironninja33/comfyui-browser:latest build_context
-
-        echo "Saving Docker image to $@"
-        docker save -o $@ ironninja33/comfyui-browser:latest
-    """,
-    tags = ["local", "requires-network"],
+    package_dir = "/",
+    mode = "0755",
 )
 
-# Rule to push the Docker image
-sh_binary(
-    name = "push",
-    srcs = ["push.sh"],
-    data = [":comfyui_image"],
-    args = ["$(location :comfyui_image)"],
+# OCI Image Definition (No Docker Daemon Required)
+oci_image(
+    name = "comfyui_image",
+    base = "@runpod_base",
+    tars = [
+        ":ffmpeg_layer",
+        ":app_layer",
+    ],
+    entrypoint = ["/start.sh"],
+    exposed_ports = ["8188", "7888", "8080"],
+)
+
+# Tarball output
+oci_tarball(
+    name = "comfyui_image_tar",
+    image = ":comfyui_image",
+    repo_tags = ["ironninja33/comfyui-browser:latest"],
 )
