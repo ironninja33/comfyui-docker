@@ -1,9 +1,14 @@
+# build standard image and run
 docker build -t ironninja33/comfyui-browser:latest .
 docker run --rm --gpus all -p 8188:8188 -p 7888:7888 ironninja33/comfyui-browser:latest
 docker exec -it <name> bash
 docker push ironninja33/comfyui-browser:latest
 
+# build 5090 image
 docker build -t ironninja33/comfyui-browser:latest-5090 .
 docker run --rm --gpus all -p 8188:8188 -p 7888:7888 ironninja33/comfyui-browser:latest-5090
-
 docker run --rm --gpus all -p 8188:8188 -p 7888:7888 runpod/comfyui:latest-5090
+
+# Bazel
+Build: bazel build //:comfyui_image
+Push: bazel run //:push

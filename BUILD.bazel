@@ -1,0 +1,39 @@
+package(default_visibility = ["//visibility:public"])
+
+# Rule to build the Docker image using the existing Dockerfile
+genrule(
+    name = "comfyui_image",
+    srcs = [
+        "Dockerfile",
+        "config.ini",
+        "models.json",
+        "json_patch.py",
+        "set_default_image_browser_path.py",
+        "start.sh",
+    ],
+    outs = ["comfyui_image.tar"],
+    cmd = """
+        mkdir -p build_context
+        cp $(location Dockerfile) build_context/
+        cp $(location config.ini) build_context/
+        cp $(location models.json) build_context/
+        cp $(location json_patch.py) build_context/
+        cp $(location set_default_image_browser_path.py) build_context/
+        cp $(location start.sh) build_context/
+
+        echo "Building Docker image..."
+        docker build -t ironninja33/comfyui-browser:latest build_context
+
+        echo "Saving Docker image to $@"
+        docker save -o $@ ironninja33/comfyui-browser:latest
+    """,
+    tags = ["local", "requires-network"],
+)
+
+# Rule to push the Docker image
+sh_binary(
+    name = "push",
+    srcs = ["push.sh"],
+    data = [":comfyui_image"],
+    args = ["$(location :comfyui_image)"],
+)
