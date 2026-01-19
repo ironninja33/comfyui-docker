@@ -5,7 +5,6 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 # Rules Python
 http_archive(
     name = "rules_python",
-    sha256 = "c68bdc4fbec25de5b5493b8819cfc877c4ea299c0dcb15c244c5a00208cde311",
     strip_prefix = "rules_python-0.31.0",
     url = "https://github.com/bazelbuild/rules_python/releases/download/0.31.0/rules_python-0.31.0.tar.gz",
 )
@@ -13,7 +12,6 @@ http_archive(
 # Rules OCI
 http_archive(
     name = "rules_oci",
-    sha256 = "21a7d14f6ddfcb8ca7c5fc9ffa667c937ce4622c7d2b3e17aea1ffbc90c96bed",
     strip_prefix = "rules_oci-1.4.0",
     url = "https://github.com/bazel-contrib/rules_oci/releases/download/v1.4.0/rules_oci-v1.4.0.tar.gz",
 )
@@ -34,7 +32,6 @@ http_archive(
         "https://mirror.bazel.build/github.com/bazelbuild/rules_pkg/releases/download/1.0.1/rules_pkg-1.0.1.tar.gz",
         "https://github.com/bazelbuild/rules_pkg/releases/download/1.0.1/rules_pkg-1.0.1.tar.gz",
     ],
-    sha256 = "d20c951960ed77cb7b341c2a59488534e494d5ad1d63c501ce3c7e4d39742610",
 )
 load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
 rules_pkg_dependencies()
