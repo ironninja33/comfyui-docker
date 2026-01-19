@@ -21,7 +21,7 @@ RUN ldconfig
 # 8188: ComfyUI
 # 7888: Infinite Image Browsing
 # 8080: FileBrowser
-EXPOSE 8188 7888 8080 8888
+EXPOSE 8188 7888 8080
 
 # Setup startup script
 COPY config.ini /config.ini

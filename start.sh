@@ -90,25 +90,6 @@ export_env_vars() {
     chmod 600 "$SSH_ENV_DIR"
 }
 
-# Start Jupyter Lab server for remote access
-start_jupyter() {
-    mkdir -p /workspace
-    echo "Starting Jupyter Lab on port 8888..."
-    nohup jupyter lab \
-        --allow-root \
-        --no-browser \
-        --port=8888 \
-        --ip=0.0.0.0 \
-        --FileContentsManager.delete_to_trash=False \
-        --FileContentsManager.preferred_dir=/workspace \
-        --ServerApp.root_dir=/workspace \
-        --ServerApp.terminado_settings='{"shell_command":["/bin/bash"]}' \
-        --IdentityProvider.token="${JUPYTER_PASSWORD:-}" \
-        --ServerApp.allow_origin=* &> /jupyter.log &
-    echo "Jupyter Lab started"
-}
-
-
 # Start Infinite Image Browsing
 start_image_browser() {
     echo "Starting Infinite Image Browsing on port 7888..."
@@ -122,7 +103,9 @@ start_image_browser() {
 # ---------------------------------------------------------------------------- #
 
 # Setup environment
+echo "[DEBUG] Setting up SSH..."
 setup_ssh
+echo "[DEBUG] Exporting environment variables..."
 export_env_vars
 
 # Initialize FileBrowser if not already done
@@ -142,8 +125,6 @@ fi
 echo "Starting FileBrowser on port 8080..."
 nohup filebrowser &> /filebrowser.log &
 
-start_jupyter
-
 # Create default comfyui_args.txt if it doesn't exist
 ARGS_FILE="/workspace/runpod-slim/comfyui_args.txt"
 if [ ! -f "$ARGS_FILE" ]; then
@@ -152,6 +133,7 @@ if [ ! -f "$ARGS_FILE" ]; then
 fi
 
 # Setup Infinite Image Browsing if needed
+echo "[DEBUG] Checking Infinite Image Browsing installation..."
 if [ ! -d "$IMAGE_BROWSER_DIR" ]; then
     echo "Installing Infinite Image Browsing..."
     cd /workspace/runpod-slim
@@ -171,9 +153,11 @@ fi
 echo "Configuring Image Browser default path..."
 "$IMAGE_BROWSER_VENV/bin/python" /set_default_image_browser_path.py "$COMFYUI_DIR/output" --project-path "$IMAGE_BROWSER_DIR" --mode scanned
 
+echo "[DEBUG] Starting Image Browser..."
 start_image_browser
 
 # Setup ComfyUI if needed
+echo "[DEBUG] Checking ComfyUI installation..."
 if [ ! -d "$COMFYUI_DIR" ]; then
     echo "Cloning ComfyUI..."
     cd /workspace/runpod-slim
@@ -181,6 +165,7 @@ if [ ! -d "$COMFYUI_DIR" ]; then
 fi
 
 # Setup ComfyUI Manager config
+echo "[DEBUG] Checking ComfyUI Manager config..."
 if [ -f "/config.ini" ] && [ ! -f "$COMFYUI_DIR/user/__manager/config.ini" ]; then
     echo "Setting up ComfyUI Manager config..."
     mkdir -p "$COMFYUI_DIR/user/__manager"
@@ -188,6 +173,7 @@ if [ -f "/config.ini" ] && [ ! -f "$COMFYUI_DIR/user/__manager/config.ini" ]; th
 fi
 
 # Install ComfyUI-Manager if not present
+echo "[DEBUG] Checking ComfyUI-Manager installation..."
 if [ ! -d "$COMFYUI_DIR/custom_nodes/ComfyUI-Manager" ]; then
     echo "Installing ComfyUI-Manager..."
     mkdir -p "$COMFYUI_DIR/custom_nodes"
@@ -196,6 +182,7 @@ if [ ! -d "$COMFYUI_DIR/custom_nodes/ComfyUI-Manager" ]; then
 fi
 
 # Create/Activate virtual environment
+echo "[DEBUG] Checking virtual environment..."
 if [ ! -d "$VENV_DIR" ]; then
     echo "Creating virtual environment..."
     cd $COMFYUI_DIR
@@ -207,6 +194,7 @@ else
 fi
 
 # Ensure base dependencies
+echo "[DEBUG] Checking base dependencies..."
 if [ ! -f "$VENV_DIR/.base_installed" ]; then
     echo "Installing/Updating base dependencies..."
     python -m ensurepip --upgrade
@@ -218,6 +206,7 @@ if [ ! -f "$VENV_DIR/.base_installed" ]; then
 fi
 
 # Install additional custom nodes
+echo "[DEBUG] Checking additional custom nodes..."
 CUSTOM_NODES=(
     "https://github.com/kijai/ComfyUI-KJNodes"
     "https://github.com/MoonGoblinDev/Civicomfy"
@@ -240,6 +229,7 @@ for repo in "${CUSTOM_NODES[@]}"; do
 done
 
 # Install dependencies for all custom nodes
+echo "[DEBUG] Installing custom node dependencies..."
 echo "Installing custom node dependencies..."
 cd "$COMFYUI_DIR/custom_nodes"
 for node_dir in */; do
@@ -278,6 +268,7 @@ for node_dir in */; do
 done
 
 # Patch ComfyUI-Manager model-list.json with custom models
+echo "[DEBUG] Checking ComfyUI-Manager model-list patch..."
 if [ -d "$COMFYUI_DIR/custom_nodes/ComfyUI-Manager" ] && [ -f "/models.json" ] && [ ! -f "$COMFYUI_DIR/custom_nodes/ComfyUI-Manager/.patched" ]; then
     echo "Patching ComfyUI-Manager model-list.json..."
     python /json_patch.py --source /models.json --target "$COMFYUI_DIR/custom_nodes/ComfyUI-Manager/model-list.json"
@@ -297,6 +288,7 @@ if [ -d "$COMFYUI_DIR/custom_nodes/ComfyUI-Manager" ] && [ -f "/models.json" ] &
 fi
 
 # Start ComfyUI with custom arguments if provided
+echo "[DEBUG] Starting ComfyUI..."
 cd $COMFYUI_DIR
 FIXED_ARGS="--listen 0.0.0.0 --port 8188"
 if [ -s "$ARGS_FILE" ]; then
