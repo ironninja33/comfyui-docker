@@ -2,6 +2,15 @@ workspace(name = "comfyui_docker")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
+# Platforms
+http_archive(
+    name = "platforms",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/platforms/releases/download/0.0.10/platforms-0.0.10.tar.gz",
+        "https://github.com/bazelbuild/platforms/releases/download/0.0.10/platforms-0.0.10.tar.gz",
+    ],
+)
+
 # Rules Python
 http_archive(
     name = "rules_python",
