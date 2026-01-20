@@ -48,6 +48,8 @@ FFMPEG_DIR="$INSTALL_DIR/ffmpeg"
 export PATH="$FFMPEG_DIR/bin:$PATH"
 export LD_LIBRARY_PATH="$FFMPEG_DIR/lib:$LD_LIBRARY_PATH"
 
+echo "PATH, including ffmpeg: {$PATH}"
+
 if [ ! -f "$FFMPEG_DIR/bin/ffmpeg" ]; then
     echo -e "${GREEN}[2/8] Compiling FFmpeg 7.0...${NC}"
     echo -e "${GREEN}Downloading and compiling FFmpeg 7.0 to $FFMPEG_DIR...${NC}"
