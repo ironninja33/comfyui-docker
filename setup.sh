@@ -103,7 +103,7 @@ if [ ! -d "$VENV_DIR" ]; then
     fi
     
     # Fix missing dependencies mentioned in original script
-    pip install piexif PyWavelets numba
+    pip install piexif PyWavelets numba opencv-python matplotlib
 else
     echo "Virtual environment exists."
     source "$VENV_DIR/bin/activate"
