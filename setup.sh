@@ -47,6 +47,7 @@ fi
 FFMPEG_DIR="$INSTALL_DIR/ffmpeg"
 export PATH="$FFMPEG_DIR/bin:$PATH"
 export LD_LIBRARY_PATH="$FFMPEG_DIR/lib:$LD_LIBRARY_PATH"
+export PKG_CONFIG_PATH="$FFMPEG_DIR/lib/pkgconfig:$PKG_CONFIG_PATH"
 
 echo "PATH, including ffmpeg: {$PATH}"
 
@@ -71,6 +72,7 @@ fi
 if ! grep -q "$FFMPEG_DIR/bin" ~/.bashrc; then
     echo "export PATH=\"$FFMPEG_DIR/bin:\$PATH\"" >> ~/.bashrc
     echo "export LD_LIBRARY_PATH=\"$FFMPEG_DIR/lib:\$LD_LIBRARY_PATH\"" >> ~/.bashrc
+    echo "export PKG_CONFIG_PATH=\"$FFMPEG_DIR/lib/pkgconfig:\$PKG_CONFIG_PATH\"" >> ~/.bashrc
     echo -e "${GREEN}Added FFmpeg to ~/.bashrc for persistence.${NC}"
 fi
 
