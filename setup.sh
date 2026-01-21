@@ -7,8 +7,8 @@ START_TIME=$(date +%s)
 # Configuration
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 INSTALL_DIR="/workspace"
-COMFYUI_DIR="$INSTALL_DIR/ComfyUI"
-VENV_DIR="$INSTALL_DIR/venv"
+COMFYUI_DIR="${COMFYUI_DIR:-$INSTALL_DIR/ComfyUI}"
+VENV_DIR="$INSTALL_DIR/comfyui-env"
 IMAGE_BROWSER_DIR="$INSTALL_DIR/sd-webui-infinite-image-browsing"
 IMAGE_BROWSER_VENV="$IMAGE_BROWSER_DIR/browser-env"
 
