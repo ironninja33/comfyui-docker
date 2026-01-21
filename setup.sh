@@ -5,6 +5,7 @@ set -e
 START_TIME=$(date +%s)
 
 # Configuration
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 INSTALL_DIR="/workspace"
 COMFYUI_DIR="$INSTALL_DIR/ComfyUI"
 VENV_DIR="$INSTALL_DIR/venv"
@@ -183,26 +184,26 @@ fi
 
 # Configure Image Browser default path
 echo "Configuring Image Browser default path..."
-if [ -f "set_default_image_browser_path.py" ]; then
-    "$IMAGE_BROWSER_VENV/bin/python" set_default_image_browser_path.py "$COMFYUI_DIR/output" --project-path "$IMAGE_BROWSER_DIR" --mode scanned
+if [ -f "$SCRIPT_DIR/set_default_image_browser_path.py" ]; then
+    "$IMAGE_BROWSER_VENV/bin/python" "$SCRIPT_DIR/set_default_image_browser_path.py" "$COMFYUI_DIR/output" --project-path "$IMAGE_BROWSER_DIR" --mode scanned
 else
-    echo -e "${YELLOW}Warning: set_default_image_browser_path.py not found.${NC}"
+    echo -e "${YELLOW}Warning: set_default_image_browser_path.py not found in $SCRIPT_DIR.${NC}"
 fi
 
 # 7. Apply Configuration Patches
 echo -e "${GREEN}[7/8] Applying Configurations...${NC}"
 
 # Config.ini
-if [ -f "config.ini" ]; then
+if [ -f "$SCRIPT_DIR/config.ini" ]; then
     mkdir -p "$COMFYUI_DIR/user/__manager"
-    cp config.ini "$COMFYUI_DIR/user/__manager/config.ini"
+    cp "$SCRIPT_DIR/config.ini" "$COMFYUI_DIR/user/__manager/config.ini"
     echo "Copied config.ini"
 fi
 
 # Patch models.json
-if [ -f "json_patch.py" ] && [ -f "models.json" ] && [ -d "$CUSTOM_NODES_DIR/ComfyUI-Manager" ]; then
+if [ -f "$SCRIPT_DIR/json_patch.py" ] && [ -f "$SCRIPT_DIR/models.json" ] && [ -d "$CUSTOM_NODES_DIR/ComfyUI-Manager" ]; then
     echo "Patching ComfyUI-Manager model list..."
-    python json_patch.py --source models.json --target "$CUSTOM_NODES_DIR/ComfyUI-Manager/model-list.json"
+    python "$SCRIPT_DIR/json_patch.py" --source "$SCRIPT_DIR/models.json" --target "$CUSTOM_NODES_DIR/ComfyUI-Manager/model-list.json"
 fi
 
 # 8. Start Services
