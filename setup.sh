@@ -80,6 +80,8 @@ fi
 # 3. Setup ComfyUI
 echo -e "${GREEN}[3/8] Setting up ComfyUI...${NC}"
 if [ ! -d "$COMFYUI_DIR" ]; then
+    mkdir -p "$INSTALL_DIR"
+    cd "$INSTALL_DIR"
     git clone https://github.com/comfyanonymous/ComfyUI.git
 else
     echo "ComfyUI already cloned."
@@ -169,6 +171,7 @@ cd "$INSTALL_DIR"
 # 6. Infinite Image Browser Setup
 echo -e "${GREEN}[6/8] Setting up Infinite Image Browser...${NC}"
 if [ ! -d "$IMAGE_BROWSER_DIR" ]; then
+    cd "$INSTALL_DIR"
     git clone https://github.com/zanllp/sd-webui-infinite-image-browsing.git
 fi
 
