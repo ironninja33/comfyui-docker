@@ -95,8 +95,7 @@ if [ ! -d "$VENV_DIR" ]; then
     pip install --upgrade pip setuptools wheel
     
     # Install PyTorch
-    pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu118
-
+    pip install torch torchvision torchaudio --no-deps
     # Install base requirements
     if [ -f "$COMFYUI_DIR/requirements.txt" ]; then
         pip install -r "$COMFYUI_DIR/requirements.txt"
